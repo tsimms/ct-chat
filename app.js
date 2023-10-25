@@ -9,10 +9,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static('static'));
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+  res.sendFile(resolve(__dirname, 'public/index.html'));
 });
 
 io.on('connection', (socket) => {
