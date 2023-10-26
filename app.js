@@ -27,6 +27,9 @@ const getRandomColor = () => {
   return colors[randomIndex];
 }
 
+const history = [];
+debugger;
+
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -50,8 +53,15 @@ io.on('connection', (socket) => {
     // Broadcast the screen share stream to all clients (including the sender)
     console.log(`Received a message: ${username}: ${text}`);
     const time = new Date().toLocaleTimeString();
-    io.emit('msg', { time, text, user });
+    const entry = { time, message };
+    history.push(entry);
+
+    io.emit('msg', { time, message, user });
   });
+
+  socket.on('getHistory', () => {
+    socket.emit('history', history);
+  })
 
   // Handle viewer's disconnection
   socket.on('disconnect', () => {
