@@ -53,10 +53,9 @@ io.on('connection', (socket) => {
     // Broadcast the screen share stream to all clients (including the sender)
     console.log(`Received a message: ${username}: ${text}`);
     const time = new Date().toLocaleTimeString();
-    const entry = { time, message };
+    const entry = { time, user, text };
     history.push(entry);
-
-    io.emit('msg', { time, message, user });
+    io.emit('msg', entry);
   });
 
   socket.on('getHistory', () => {
