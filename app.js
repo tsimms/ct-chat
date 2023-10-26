@@ -9,6 +9,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const history = [];
+debugger;
+
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -23,8 +26,15 @@ io.on('connection', (socket) => {
     // Broadcast the screen share stream to all clients (including the sender)
     console.log(`Received a message: ${message}`);
     const time = new Date().toLocaleTimeString();
+    const entry = { time, message };
+    history.push(entry);
+
     io.emit('msg', { time, message });
   });
+
+  socket.on('getHistory', () => {
+    socket.emit('history', history);
+  })
 
   // Handle viewer's disconnection
   socket.on('disconnect', () => {

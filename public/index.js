@@ -4,6 +4,18 @@
 
     // Set up socket connection
     socket = io(location.origin);
+    socket.emit('getHistory');
+    socket.on('history', (messages) => {
+        messages.forEach(entry => {
+            const {time, message} = entry;
+            history.innerHTML += `
+            <div class="row">
+            <span class="time">${time}</span>
+            <span class="message">${message}</span>
+            </div>
+            `
+        });
+    });
     socket.on('msg', async (data) => {
         console.log({ data });
         const { time, message } = data;
