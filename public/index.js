@@ -1,22 +1,7 @@
 (() => {
 
     const history = document.getElementById('history');
-
-    // Set up socket connection
-    socket = io(location.origin);
-    socket.emit('getHistory');
-    socket.on('history', (messages) => {
-        messages.forEach(entry => {
-            const {time, message} = entry;
-            history.innerHTML += `
-            <div class="row">
-            <span class="time">${time}</span>
-            <span class="message">${message}</span>
-            </div>
-            `
-        });
-    });
-    socket.on('msg', async (data) => {
+    const renderEntry = (data) => {
         console.log({ data });
         const { time, text, user } = data;
         history.innerHTML += `
@@ -26,7 +11,17 @@
         <span class="message">${text}</span>
         </div>
         `;
-    });    
+    }
+
+    // Set up socket connection
+    socket = io(location.origin);
+    socket.emit('getHistory');
+    socket.on('history', (messages) => {
+        messages.forEach(entry => {
+            renderEntry(entry);
+        });
+    });
+    socket.on('msg', (data) => renderEntry(data));    
 
     // Set up interactivity
     const triggerSend = () => {
