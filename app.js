@@ -28,7 +28,6 @@ const getRandomColor = () => {
 }
 
 const history = [];
-debugger;
 
 app.use(express.static('public'));
 
