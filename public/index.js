@@ -6,11 +6,12 @@
     socket = io(location.origin);
     socket.on('msg', async (data) => {
         console.log({ data });
-        const { time, message } = data;
+        const { time, text, user } = data;
         history.innerHTML += `
         <div class="row">
+        <span style="color: ${user.color}" class="username">${user.name}</span>
         <span class="time">${time}</span>
-        <span class="message">${message}</span>
+        <span class="message">${text}</span>
         </div>
         `;
     });    
@@ -18,9 +19,10 @@
     // Set up interactivity
     const triggerSend = () => {
         console.log(`Msg: ${inputMsg.value}`);
-        socket.emit('msg', inputMsg.value);
+        socket.emit('msg', { text: inputMsg.value, username: username.value });
         inputMsg.value = '';
     }
+    const username = document.getElementById('username');
     const inputMsg = document.getElementById('chatInput');  
     const sendButton = document.getElementById('chatSend');
     sendButton.addEventListener('click', triggerSend );
