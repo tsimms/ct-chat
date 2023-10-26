@@ -8,6 +8,24 @@ const appPort = 3010;
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+const users = {}
+const getRandomColor = () => {
+  const colors = [
+    'red',
+    'blue',
+    'green',
+    'yellow',
+    'orange',
+    'purple',
+    'pink',
+    'brown',
+    'black',
+    'white'
+  ];
+  
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
+}
 
 const history = [];
 debugger;
@@ -23,13 +41,22 @@ io.on('connection', (socket) => {
 
   // Handle screen sharing event
   socket.on('msg', (message) => {
+    const { text, username } = message;
+    if (!users[username]) {
+      users[username] = {
+        name: username,
+        color: getRandomColor()
+      }
+    }
+
+    const user = users[username];
     // Broadcast the screen share stream to all clients (including the sender)
-    console.log(`Received a message: ${message}`);
+    console.log(`Received a message: ${username}: ${text}`);
     const time = new Date().toLocaleTimeString();
     const entry = { time, message };
     history.push(entry);
 
-    io.emit('msg', { time, message });
+    io.emit('msg', { time, message, user });
   });
 
   socket.on('getHistory', () => {
