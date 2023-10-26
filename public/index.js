@@ -1,6 +1,7 @@
 (() => {
 
     const history = document.getElementById('history');
+    const userCount = document.getElementById('user-count');
 
     // Set up socket connection
     socket = io(location.origin);
@@ -26,6 +27,12 @@
         </div>
         `;
     });    
+
+    socket.on('userCountChange', (data) => {
+        const { currentUserCount } = data;
+
+        userCount.innerHTML = `Online Users: ${currentUserCount}`;
+    })
 
     // Set up interactivity
     const triggerSend = () => {
