@@ -8,8 +8,7 @@ Connect.Tech 2023 Session demonstrating StackBlitz
 ├── node_modules
 ├── public                 folder that serves up the front-end experience
 │   ├── index.html         main FE page
-│   ├── index.js           main FE page interactivity
-│   ├── style.css          FE styling
+│   └── index.js           main FE page interactivity
 ├── app.js                 main entry point for server
 ├── package-lock.json
 ├── package.json 

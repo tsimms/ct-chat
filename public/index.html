@@ -4,7 +4,49 @@
     <title>ChatCast</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="style.css" />
+    <style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 1rem;
+    font-family: system-ui, sans-serif;
+    color: black;
+    background-color: white;
+  }
+  
+  h1 {
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  
+  #history {
+    border: 1px solid #ccc;
+    height: 400px;
+    width: 100%;
+    overflow: scroll;
+    padding: 5px;
+  }
+  
+  #history .time {
+    font-weight: bold;
+  }
+  
+  #history .message {
+    padding-left: 3px;
+  }
+  
+  input#chatInput {
+    width: 100%;
+  }
+  
+  #input {
+    display: inline-flex;
+    width: 100%;
+  }
+    </style>
   </head>
   <body>
     <h1>Hello Connect.Tech!</h1>
