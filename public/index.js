@@ -1,6 +1,7 @@
 (() => {
 
     const history = document.getElementById('history');
+    const userCount = document.getElementById('user-count');
     const renderEntry = (data) => {
         console.log({ data });
         const { time, text, user } = data;
@@ -22,6 +23,12 @@
         });
     });
     socket.on('msg', (data) => renderEntry(data));    
+
+    socket.on('userCountChange', (data) => {
+        const { currentUserCount } = data;
+
+        userCount.innerHTML = `Online Users: ${currentUserCount}`;
+    })
 
     // Set up interactivity
     const triggerSend = () => {
