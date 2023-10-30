@@ -25,6 +25,12 @@ const getRandomColor = () => {
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];
 }
+const getTime = () => (new Date().toLocaleTimeString());
+const getSystemEntry = (text) => {
+  const entry = { time:getTime(), text }
+  return entry;
+}
+
 
 const history = [];
 
@@ -39,27 +45,34 @@ let currentUserCount = 0;
 io.on('connection', (socket) => {
   console.log('A user connected');
   currentUserCount++;
-
   io.emit('userCountChange', { currentUserCount });
 
-  // Handle screen sharing event
+  // Handle message event
   socket.on('msg', (message) => {
-    const { text, username } = message;
-    if (!users[username]) {
-      users[username] = {
-        name: username,
+    const { text } = message;
+    if (! (socket.nickname && users[socket.nickname]))  {
+      users[socket.nickname] = {
+        nickname: socket.nickname,
         color: getRandomColor()
       }
     }
 
-    const user = users[username];
-    // Broadcast the screen share stream to all clients (including the sender)
-    console.log(`Received a message: ${username}: ${text}`);
-    const time = new Date().toLocaleTimeString();
-    const entry = { time, user, text };
+    const user = users[socket.nickname];
+    // Broadcast the message to all clients (including the sender)
+    console.log(`Received a message: ${text}`);
+    const entry = { time:getTime(), user, text };
     history.push(entry);
     io.emit('msg', entry);
   });
+
+  socket.on('nickname', (nickname) => {
+    console.log(`Setting nickname to ${nickname}`);
+    socket.nickname = nickname;
+    const entry = getSystemEntry(`<em>${socket.nickname}</em> joined.`);
+    console.log(`Sent: ${JSON.stringify(entry)}`);
+    history.push(entry);
+    io.emit('msg', entry);
+  })
 
   socket.on('getHistory', () => {
     socket.emit('history', history);
@@ -70,6 +83,10 @@ io.on('connection', (socket) => {
     console.log('A user disconnected');
     currentUserCount--;
     io.emit('userCountChange', { currentUserCount });
+    const entry = getSystemEntry(`<em>${socket.nickname}</em> left.`);
+    console.log(`Sent: ${JSON.stringify(entry)}`);
+    history.push(entry);
+    io.emit('msg', entry);
   });
 });
 
