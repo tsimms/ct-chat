@@ -19,8 +19,7 @@ const getRandomColor = () => {
     'purple',
     'pink',
     'brown',
-    'black',
-    'white'
+    'black'
   ];
   
   const randomIndex = Math.floor(Math.random() * colors.length);
