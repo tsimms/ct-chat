@@ -2,31 +2,27 @@
 
     const history = document.getElementById('history');
     const userCount = document.getElementById('user-count');
+    const renderEntry = (data) => {
+        console.log({ data });
+        const { time, text, user } = data;
+        history.innerHTML += `
+        <div class="row">
+        <span style="color: ${user.color}" class="username">${user.name}</span>
+        <span class="time">${time}</span>
+        <span class="message">${text}</span>
+        </div>
+        `;
+    }
 
     // Set up socket connection
     socket = io(location.origin);
     socket.emit('getHistory');
     socket.on('history', (messages) => {
         messages.forEach(entry => {
-            const {time, message} = entry;
-            history.innerHTML += `
-            <div class="row">
-            <span class="time">${time}</span>
-            <span class="message">${message}</span>
-            </div>
-            `
+            renderEntry(entry);
         });
     });
-    socket.on('msg', async (data) => {
-        console.log({ data });
-        const { time, message } = data;
-        history.innerHTML += `
-        <div class="row">
-        <span class="time">${time}</span>
-        <span class="message">${message}</span>
-        </div>
-        `;
-    });    
+    socket.on('msg', (data) => renderEntry(data));    
 
     socket.on('userCountChange', (data) => {
         const { currentUserCount } = data;
@@ -37,9 +33,10 @@
     // Set up interactivity
     const triggerSend = () => {
         console.log(`Msg: ${inputMsg.value}`);
-        socket.emit('msg', inputMsg.value);
+        socket.emit('msg', { text: inputMsg.value, username: username.value });
         inputMsg.value = '';
     }
+    const username = document.getElementById('username');
     const inputMsg = document.getElementById('chatInput');  
     const sendButton = document.getElementById('chatSend');
     sendButton.addEventListener('click', triggerSend );
