@@ -49,8 +49,16 @@ io.on('connection', (socket) => {
 
   // Handle message event
   socket.on('msg', (message) => {
-    const { text } = message;
-    if (! (socket.nickname && users[socket.nickname]))  {
+    let { text } = message;
+    text = text.replace(/[&<>'"]/g, 
+      tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag]))
+     if (! (socket.nickname && users[socket.nickname]))  {
       users[socket.nickname] = {
         nickname: socket.nickname,
         color: getRandomColor()
